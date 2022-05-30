@@ -2,11 +2,9 @@
 
 ## The Repository
 
-Here you will find an automated script that clones my [.files repo](https://github.com/david35mm/.files) and applies some other changes to the system. Lately I've been maintaining two scripts, one for Fedora and another one for Arch, both of them I would consider as usable but there are certain bugs nonetheless, you are free to use them but I'm considering them as _legacy_.
+Here you will find an automated script that clones my [.files repo](https://github.com/david35mm/.files) and applies some other changes to the system. The script only works _for now_ on Fedora and **VANILLA** Arch Linux. I don't think adding support to other distros would be difficult, so every pull request will be appreciated.
 
-If you want to contribute to this repository I would prefer you to do so in the unified script (wich is still in alpha). The contents of this repository are freely available for everyone to view, download and modify, more information on the [License](#license) down below.
-
-You are completely free of making a pull request, any contribution will be greatly appreciated.
+The contents of this repository are available under the terms of the [ISC License](https://opensource.org/licenses/ISC) and it is also the preferred license for contributions.
 
 ## How to run the script?
 
@@ -18,15 +16,19 @@ curl -fsSL https://raw.githubusercontent.com/david35mm/up35mm/main/up35mm.sh | s
 
 ## Who is David Salomón?
 
-I am an Electronic Engineering student, passionate about computers and everything related to it. I was born in [Bogotá](https://en.wikipedia.org/wiki/Bogot%C3%A1), the capital city of the South American country [Colombia](https://en.wikipedia.org/wiki/Colombia). My nickname in almost all of the social media I am registered on is david.35mm. Why? In the last few years, one of my main hobbies has been photography, I even started a small YouTube channel. There I shared some tips and explain some concepts about photography, you are free to check out my videos but... as a native Spanish speaker all of my videos are going to be in that language.
+I was an Electronic Engineering student, now seeking to study Computer Science, passionate about computers and everything related to it. I was born in [Bogotá](https://en.wikipedia.org/wiki/Bogot%C3%A1), the capital city of the South American country [Colombia](https://en.wikipedia.org/wiki/Colombia).
 
-The 35mm on my nickname is because of the measurement of the photographic film used in the past. As a photography enthusiast I also have my own portfolio, as you can see I love portraits and thus I base almost all of my work on this type of art.
+In the last few years, one of my main hobbies has been photography, I even started a [small YouTube channel](https://www.youtube.com/channel/UC-8MDD0AHj0-ZUPolunq6MQ). I shared some tips and explain some concepts about photography, you are free to check out my videos but... as a native Spanish speaker all of my videos are going to be in that language.
+
+The 35mm on my nickname is because of the measurement of the photographic film used in the past. As a photography enthusiast I also have [my own portfolio](https://spark.adobe.com/page/yADDtrHvBow4p/), as you can see I love portraits and thus I base almost all of my work on this type of art.
+
+If you are wondering what GNU/Linux distribution I use, it has been Artix for the last year. I'm thinking on going back to Fedora and try the rawhide edition. Want to talk with me (or even practise your Spanish)? DM me over on [Instagram](https://www.instagram.com/david35mm.co).
 
 ### Here is a quick access to my active social media
 
 - [GitHub Profile](https://github.com/david35mm)
 
-- [Instagram Page](https://www.instagram.com/david.35mm)
+- [Instagram Page](https://www.instagram.com/david35mm.co)
 
 - [Personal Portfolio](https://spark.adobe.com/page/yADDtrHvBow4p/)
 
@@ -34,22 +36,12 @@ The 35mm on my nickname is because of the measurement of the photographic film u
 
 ## Do you want to buy me a doughnut?
 
-I have a PayPal link where you can send me your donation. If you are using the Brave Web Browser (If you don't then you should try it. It's an open source, privacy oriented browser) you could add me as a verified content creator to your monthly donation fee. If you have not installed Brave I have a referral link, just click download button and then install it, you doing that is going to help me a lot!
-
-- [My PayPal](https://paypal.me/david35mm)
-
-- [My Brave link](https://brave.com/gek146)
-
-## A one last thing
-
-If you are wondering what GNU/Linux distribution I use, it has been Arch for the last year. I'm thinking on going back to Fedora and try the rawhide edition. Want to talk with me (or even practise your Spanish)? DM me over on Instagram.
-
-- [Instagram](https://www.instagram.com/david.35mm).
+I have a [PayPal link](https://paypal.me/david35mm) where you can send me your donation. If you are using the Brave Web Browser (If you don't then you should try it. It's an open source, privacy oriented browser) you could add me as a verified content creator to your monthly donation fee.
 
 ## License
 
-> "THE BEER-WARE LICENSE" (Revision 42):
+> Copyright © 2022 David Andrés Ramírez Salomón <david35mm@disroot.org>
 >
-> As long as you retain this notice you can do whatever you want with this stuff. If we meet some day, and you think this stuff is worth it, you can buy me a beer in return.
+> Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 >
-> This project is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
