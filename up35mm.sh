@@ -162,9 +162,6 @@ zchunk=True
 END
     sleep 2.5
     clear
-    ##--
-    ##
-    ##++
     printf '%b\n' "Creating common aliases for DNF"
     doas dnf alias add cc='\clean all'
     doas dnf alias add if='info'
@@ -177,9 +174,6 @@ END
     doas dnf alias add up='upgrade'
     doas dnf alias add wp='provides'
     clear
-    ##--
-    ##
-    ##++
   elif [ "$DISTRO" -eq 2 ]; then
     printf '%b\n' "Type your password to write a new pacman settings file"
     [ -e /etc/pacman.conf ] && doas mv -vb /etc/pacman.conf /etc/pacman.conf.bak
@@ -220,9 +214,6 @@ SigLevel    = Required DatabaseOptional
 END
     sleep 2.5
     clear
-    ##--
-    ##
-    ##++
     printf '%b\n' "Adding repos to pacman settings file"
     cat << END | doas tee -a /etc/pacman.conf && clear \
       && printf '%b\n' "\n\t\033[0;32m\033[1m●  Succeded! \033[0m Repos added to \033[0;34m\033[4m/etc/pacman.conf\033[0m" \
@@ -243,9 +234,6 @@ Include = /etc/pacman.d/mirrorlist
 END
     sleep 2.5
     clear
-    ##--
-    ##
-    ##++
     printf '%b\n' "Installing Chaotic-AUR repo"
     doas pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
     doas pacman-key --lsign-key FBA220DFC880C036
@@ -260,9 +248,6 @@ Include = /etc/pacman.d/chaotic-mirrorlist
 END
     sleep 2.5
     clear
-    ##--
-    ##
-    ##++
     pkg_install pacman-contrib
     clear
   fi
@@ -285,9 +270,6 @@ install_xorg() {
     xorg-server-common xorg-xauth xorg-xinit xorg-xrdb xorg-xwayland pipewire \
     pipewire-alsa pipewire-jack pipewire-pulse wireplumber lightdm-gtk-greeter
   clear
-  ##--
-  ##
-  ##++
   if dialog --default-button "yes" --yesno "Are you using an AMD graphics card?" 0 0; then
     clear
     printf '%b\n' "Installing AMD drivers (2D support), Vulkan (3D support) and Accelerated Video Decoding support"
@@ -302,9 +284,6 @@ install_xorg() {
       libva-intel-driver xf86-video-intel
   fi
   clear
-  ##--
-  ##
-  ##++
   printf '%b\n' "Enabling lightdm service and changing the default systemd target to 'graphical'"
   doas systemctl enable lightdm && doas systemctl set-default graphical.target \
     && printf '%b\n' "\n\t\033[0;32m\033[1m●  Succeded! \033[0m lightdm will start automatically on boot from now on" \
@@ -399,9 +378,6 @@ get_extra_utils() {
   pkg_install arandr dash dunst gvfs gvfs-mtp libmtp libnotify lxappearance \
     lxqt-archiver pavucontrol pcmanfm-qt picom qt5ct udiskie zsh
   clear
-  ##--
-  ##
-  ##++
   grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment \
     || printf '%b\n' "QT_QPA_PLATFORMTHEME=qt5ct" | doas tee -a /etc/environment
   doas ln -vsf /usr/bin/dash /bin/sh
