@@ -1,19 +1,21 @@
 #!/bin/sh
 
 #--
-# Copyright © 2022 David Andrés Ramírez Salomón <david35mm@disroot.org>
+# ISC License
+#
+# Copyright (c) 2022 David Andrés Ramírez Salomón <david35mm@disroot.org>
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
 #++
 
 main_menu() {
@@ -71,8 +73,18 @@ Name=en*
 
 [Network]
 DHCP=yes
+IPv6PrivacyExtensions=true
 
-[DHCP]
+[Route]
+Gateway=_dhcp4
+InitialCongestionWindow=30
+InitialAdvertisedReceiveWindow=30
+
+[DHCPv4]
+Anonymize=true
+RouteMetric=10
+
+[IPv6AcceptRA]
 RouteMetric=10
 END
   cat << END | doas tee /etc/systemd/network/25-wireless.network && clear
@@ -81,8 +93,19 @@ Name=wl*
 
 [Network]
 DHCP=yes
+IPv6PrivacyExtensions=true
+IgnoreCarrierLoss=3s
 
-[DHCP]
+[Route]
+Gateway=_dhcp4
+InitialCongestionWindow=30
+InitialAdvertisedReceiveWindow=30
+
+[DHCPv4]
+Anonymize=true
+RouteMetric=20
+
+[IPv6AcceptRA]
 RouteMetric=20
 END
   for file in /etc/systemd/network/2?-wired.network; do
@@ -96,7 +119,7 @@ END
   [ -e /etc/systemd/resolved.conf ] \
     && doas mv -vb /etc/systemd/resolved.conf /etc/systemd/resolved.conf.bak
   cat << END | doas tee /etc/systemd/resolved.conf && clear \
-    && doas ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf \
+    && doas ln -rsf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf \
     && printf '%b\n' "\n\t\033[0;32m\033[1m●  Succeded! \033[0m systemd-resolved has been configured successfully" \
     || printf '%b\n' "\n\t\033[0;31m\033[1m●  Error! \033[0m Something happened while writing systemd-resolved config"
 [Resolve]
@@ -241,7 +264,7 @@ END
     cat << END | doas tee -a /etc/pacman.conf && clear \
       && printf '%b\n' "\n\t\033[0;32m\033[1m●  Succeded! \033[0m Chaotic-AUR repo added to \033[0;34m\033[4m/etc/pacman.conf\033[0m" \
       || printf '%b\n' "\n\t\033[0;31m\033[1m●  Error! \033[0m Failed trying to add Chaotic-AUR repo to \033[0;34m\033[4m/etc/pacman.conf\033[0m"
-    
+
 # Chaotic AUR
 [chaotic-aur]
 Include = /etc/pacman.d/chaotic-mirrorlist
@@ -299,15 +322,14 @@ be renamed (as a backup)" 0 0 \
     --clear --no-label "Do it later" --yes-label "Proceed" \
     --colors --yesno "This script will create backups of the following
 files and folders \Zb\Z3(if they exist)\Zn:\n.bashrc\n.config/\n.files/\n
-.gitignore\n.Xresources\nLICENSE\nREADME.md\n\nThe backup files will have
+LICENSE\n.profile\nREADME.md\n\nThe backup files will have
 a \Zu\Z4.bak\Zn extension\n\nDo you wish to proceed?" 0 0; then
     clear
     [ -e .bashrc ] && mv -vb .bashrc .bashrc.bak
     [ -e .config ] && mv -vb .config/ .config.bak/
     [ -e .files ] && mv -vb .files/ .files.bak/
-    [ -e .gitignore ] && mv -vb .gitignore .gitignore.bak
-    [ -e .Xresources ] && mv -vb .Xresources .Xresources.bak
     [ -e LICENSE ] && mv -vb LICENSE LICENSE.bak
+    [ -e .profile ] && mv -vb .profile .profile.bak
     [ -e README.md ] && mv -vb README.md README.md.bak
     clear
     git clone --bare https://github.com/david35mm/.files.git "$HOME"/.files \
@@ -322,17 +344,19 @@ a \Zu\Z4.bak\Zn extension\n\nDo you wish to proceed?" 0 0; then
 }
 
 install_fti() {
-  command -v tar > /dev/null || pkg_install tar
   [ -e fonts-themes ] && rm -vrf fonts-themes/
   git clone https://github.com/david35mm/fonts-themes.git
-  dialog --colors --msgbox "Extracting fonts, themes and icons to the \Zu\Z4/usr/share/\Zn folder" 0 0
+  dialog --colors --msgbox "Installing fonts, themes and icons" 0 0
   clear
   [ -e /usr/share/fonts ] || doas mkdir -v /usr/share/fonts
   [ -e /usr/share/icons ] || doas mkdir -v /usr/share/icons
   [ -e /usr/share/themes ] || doas mkdir -v /usr/share/themes
-  doas tar -C /usr/share/fonts -xf fonts-themes/fonts.tar.xz
-  doas tar -C /usr/share/icons -xf fonts-themes/icons.tar.xz
-  doas tar -C /usr/share/themes -xf fonts-themes/themes.tar.xz
+  [ "$DISTRO" -eq 1 ] && doas dnf copr enable david35mm/plata-theme \
+    && doas dnf install plata-theme
+  [ "$DISTRO" -eq 2 ] \
+    && doas busybox tar -C /usr/share/themes -xvJf fonts-themes/themes.tar.xz
+  doas busybox tar -C /usr/share/fonts -xvJf fonts-themes/fonts.tar.xz
+  doas busybox tar -C /usr/share/icons -xvJf fonts-themes/icons.tar.xz
   rm -vrf fonts-themes/
   clear
   dialog --colors --yesno "Would you like to install the Deepin DE Wallpaper pack?" 0 0 \
@@ -348,7 +372,7 @@ utils_menu() {
 ------------------------------------------------
 
   1) Install base utils (alacritty, polkit, ntfs support, rofi)
-  2) Install some extra utils (dunst, MTP support, pcmanfm-qt, udiskie, etc)
+  2) Install some extra utils (dunst, pavucontrol, pcmanfm-qt, udiskie, etc)
 
   R) Return to menu
 
@@ -375,13 +399,12 @@ get_base_utils() {
 }
 
 get_extra_utils() {
-  pkg_install arandr dash dunst gvfs gvfs-mtp libmtp libnotify lxappearance \
-    lxqt-archiver pavucontrol pcmanfm-qt picom qt5ct udiskie zsh
+  pkg_install arandr dunst libnotify lxappearance lxqt-archiver pavucontrol \
+    pcmanfm-qt picom qt5ct udiskie zsh
   clear
   grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment \
     || printf '%b\n' "QT_QPA_PLATFORMTHEME=qt5ct" | doas tee -a /etc/environment
-  doas ln -vsf /usr/bin/dash /bin/sh
-  doas curl -fsSLo /etc/zsh/zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
+  doas curl -fsSLo /root/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
   doas usermod -s /bin/zsh root
   clear
 }
@@ -403,16 +426,13 @@ theme-name=Plata-Noir-Compact
 END
   sleep 2.5
   clear
-  [ "$DISTRO" -eq 1 ] && doas dnf copr enable atim/starship -y
-  pkg_install starship
-  clear
 }
 
 delete_trash() {
   dialog --colors --msgbox "Deleting the following files from your
-\Zu\Z4$HOME\Zn folder:\n.gitignore\nLICENSE\nREADME.md" 0 0
+\Zu\Z4$HOME\Zn folder:\nLICENSE\nREADME.md" 0 0
   clear
-  doas rm -vrf .gitignore LICENSE README.md
+  doas rm -vrf LICENSE README.md
   clear
 }
 
@@ -444,7 +464,7 @@ main() {
 
     Welcome to David Salomon's GNU/Linux tool
 
-    Revision 0.1.0
+    Revision 0.2.0
 
     Brought to you by david35mm
     https://github.com/david35mm/
@@ -455,9 +475,9 @@ END
   clear
   printf '%b\n' "Installing script's minimal dependencies (dialog - git - opendoas)"
   command -v dnf > /dev/null && DISTRO=1 \
-    && su -c 'dnf install -y dialog git-core opendoas && printf '%b' "permit persist :wheel\n" > /etc/doas.conf'
+    && su -c 'dnf install -y busybox dialog git-core opendoas && printf "permit persist :wheel\n" > /etc/doas.conf'
   command -v pacman > /dev/null && DISTRO=2 \
-    && su -c 'pacman -S --needed --noconfirm dialog git opendoas && printf '%b' "permit persist :wheel\n" > /etc/doas.conf'
+    && su -c 'pacman -S --needed --noconfirm busybox dialog git opendoas && printf "permit persist :wheel\n" > /etc/doas.conf'
   readonly DISTRO
   clear
   main_menu
