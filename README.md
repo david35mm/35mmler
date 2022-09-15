@@ -1,5 +1,14 @@
 # David Salomón's up35mm script
 
+<div style="text-align: center;">
+
+[![GitHub license](https://img.shields.io/github/license/david35mm/up35mm?style=flat-square)](https://choosealicense.com/licenses/isc/)
+![GitHub top language](https://img.shields.io/github/languages/top/david35mm/up35mm?style=flat-square)
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/david35mm/up35mm?label=codefactor&style=flat-square)](https://www.codefactor.io/repository/github/david35mm/up35mm)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/david35mm/up35mm?label=revision&style=flat-square)
+
+</div>
+
 ## The Repository
 
 Here you will find an automated script that clones my
