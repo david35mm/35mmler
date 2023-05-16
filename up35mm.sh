@@ -3,7 +3,7 @@
 #--
 # ISC License
 #
-# Copyright (c) 2022 David Andrés Ramírez Salomón <david35mm@disroot.org>
+# Copyright (c) 2022-2023 David Andrés Ramírez Salomón <david35mm@disroot.org>
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -57,12 +57,7 @@ END
 
 conf_network() {
   printf '%b\n' "Installling iwd"
-  [ "$DISTRO" -eq 1 ] && pkg_install iwd systemd-networkd systemd-resolved \
-    && cat <<END | tee fedora_run_after_reboot.sh && chmod 700 fedora_run_after_reboot.sh
-#!/bin/sh
-
-doas rpm -e --allmatches --nodeps $(dnf list installed | grep NetworkManager | cut -d'.' -f1) && doas dnf remove ModemManager wpa_supplicant
-END
+  [ "$DISTRO" -eq 1 ] && pkg_install iwd systemd-networkd systemd-resolved
   [ "$DISTRO" -eq 2 ] && pkg_install iwd
   clear
   printf '%b\n' "Configuring wired and wireless networks with systemd-networkd"
@@ -149,7 +144,7 @@ END
   sleep 2.5
   clear
   printf '%b\n' "Enabling systemd services to be started in next boot"
-  [ "$DISTRO" -eq 1 ] && doas systemctl disable ModemManager NetworkManager wpa_supplicant
+  [ "$DISTRO" -eq 1 ] && doas systemctl disable ModemManager NetworkManager NetworkManager-dispatcher NetworkManager-wait-online wpa_supplicant
   doas systemctl enable iwd systemd-networkd systemd-resolved
   clear
 }
@@ -161,41 +156,36 @@ conf_pkg_manager() {
     cat << END | doas tee /etc/dnf/dnf.conf && clear \
       && printf '%b\n' "\n\t\033[0;32m\033[1m●  Succeded! \033[0m Settings written at \033[0;34m\033[4m/etc/dnf/dnf.conf\033[0m" \
       || printf '%b\n' "\n\t\033[0;31m\033[1m●  Error! \033[0m The settings could not be written at \033[0;34m\033[4m/etc/dnf/dnf.conf\033[0m"
+# see `man dnf.conf` for defaults and possible options
+
 [main]
-best=True
-check_config_file_age=False
+best=False
 clean_requirements_on_remove=True
-color=always
+countme=True
 defaultyes=True
-deltarpm=True
-diskspacecheck=False
+deltarpm=False
+deltarpm_percentage=0
+exclude_from_weak_autodetect=False
+exit_on_lock=True
 fastestmirror=True
 gpgcheck=True
+group_package_types=mandatory
+installonly_limit=3
 install_weak_deps=False
-installonly_limit=2
-keepcache=False
 max_parallel_downloads=10
-metadata_expire=259200
-metadata_timer_sync=0
-obsoletes=True
-protect_running_kernel=False
+metadata_expire=10800
+minrate=1.5M
 skip_if_unavailable=True
-throttle=0
-zchunk=True
+timeout=5
 END
     sleep 2.5
     clear
     printf '%b\n' "Creating common aliases for DNF"
-    doas dnf alias add cc='\clean all'
-    doas dnf alias add if='info'
-    doas dnf alias add in='install'
-    doas dnf alias add lr='repolist'
-    doas dnf alias add lu='list updates'
-    doas dnf alias add ref='makecache'
-    doas dnf alias add rm='remove'
-    doas dnf alias add se='search'
-    doas dnf alias add up='upgrade'
-    doas dnf alias add wp='provides'
+    doas dnf alias add cc="clean all"
+    doas dnf alias add \?="help"
+    doas dnf alias add lr="repolist"
+    doas dnf alias add lu="check-update"
+    doas dnf alias add ref="makecache"
     clear
   elif [ "$DISTRO" -eq 2 ]; then
     printf '%b\n' "Type your password to write a new pacman settings file"
@@ -464,7 +454,7 @@ main() {
 
     Welcome to David Salomon's GNU/Linux tool
 
-    Revision 0.2.0
+    Revision 0.3.0
 
     Brought to you by david35mm
     https://github.com/david35mm/
