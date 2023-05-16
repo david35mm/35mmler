@@ -83,7 +83,7 @@ verified content creator to your monthly donation fee.
 
 > ISC License
 >
-> Copyright (c) 2022 David Andrés Ramírez Salomón <david35mm@disroot.org>
+> Copyright (c) 2022-2023 David Andrés Ramírez Salomón <david35mm@disroot.org>
 >
 > Permission to use, copy, modify, and/or distribute this software for any
 > purpose with or without fee is hereby granted, provided that the above
